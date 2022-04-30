@@ -60,7 +60,7 @@ defult weights files is `weights/kitti.weights`
 
 coco dataset :
 ```
-python3 detect.py —image_folder ~/2011_09_26/2011_09_26_drive_0001_sync/image_03/data/ —config_path config/yolov3.cfg —weights_path weights/yolov3.weights —class_path data/coco.names
+python3 detect.py --config_path config/yolov3.cfg --weights_path weights/yolov3.weights --class_path data/coco.names --image_folder ~/Documents/KITTI-download-scipt/2011_09_26/2011_09_26_drive_0014_sync/image_03/data/ --output_path output_14 
 ```
 
 ## Video

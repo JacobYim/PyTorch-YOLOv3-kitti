@@ -33,13 +33,14 @@ parser.add_argument('--batch_size', type=int, default=1, help='size of the batch
 parser.add_argument('--n_cpu', type=int, default=8, help='number of cpu threads to use during batch generation')
 parser.add_argument('--img_size', type=int, default=416, help='size of each image dimension')
 parser.add_argument('--use_cuda', type=bool, default=True, help='whether to use cuda if available')
+parser.add_argument('--output_path', type=str, default='output', help='where detected object saved')
 opt = parser.parse_args()
 print('Config:')
 print(opt)
 
 cuda = torch.cuda.is_available() and opt.use_cuda
 
-os.makedirs('output', exist_ok=True)
+os.makedirs(opt.output_path, exist_ok=True)
 
 # Set up model
 model = Darknet(opt.config_path, img_size=opt.img_size)
@@ -151,5 +152,5 @@ for img_i, (path, detections) in enumerate(zip(imgs, img_detections)):
     plt.axis('off')
     plt.gca().xaxis.set_major_locator(NullLocator())
     plt.gca().yaxis.set_major_locator(NullLocator())
-    plt.savefig('output/%d.png' % (img_i), bbox_inches='tight', pad_inches=0.0)
+    plt.savefig('%s/%d.png' % (opt.output_path, img_i), bbox_inches='tight', pad_inches=0.0)
     plt.close()
