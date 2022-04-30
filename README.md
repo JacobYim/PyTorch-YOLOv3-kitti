@@ -29,6 +29,11 @@ if you wan use pretrained darknet-53 on IMAGENET weights, please download [darkn
 if you just want a pretrained weights on kitti dataset for test or detect, please download [pretrained weights file](https://drive.google.com/file/d/1BRJDDCMRXdQdQs6-x-3PmlzcEuT9wxJV/view?usp=sharing), and put it into `weights` folder, the path:
 `weights/yolov3-kitti.weights`
 
+if you want a pretrained wights on coco dataset for test or detect, please download and place it into `weights` forder with command :
+```
+wget https://pjreddie.com/media/files/yolov3.weights
+```
+
 ##### Download Kitti 
 
 [The KITTI Vision Benchmark Suite](http://www.cvlibs.net/datasets/kitti/eval_object.php)
@@ -52,6 +57,11 @@ Small objects detection
 
 run`detect.py` to detect objects, and please  put samples into `data/samples`
 defult weights files is `weights/kitti.weights`
+
+coco dataset :
+```
+python3 detect.py —image_folder ~/2011_09_26/2011_09_26_drive_0001_sync/image_03/data/ —config_path config/yolov3.cfg —weights_path weights/yolov3.weights —class_path data/coco.names
+```
 
 ## Video
 

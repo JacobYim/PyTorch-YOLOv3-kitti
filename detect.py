@@ -6,6 +6,7 @@ from utils.datasets import *
 
 import os
 import sys
+import csv
 import time
 import datetime
 import argparse
@@ -86,8 +87,8 @@ for batch_i, (img_paths, input_imgs) in enumerate(dataloader):
     img_detections.extend(detections)
 
 # Bounding-box colors
-#cmap = plt.get_cmap('tab20b')
-cmap = plt.get_cmap('Vega20b')
+cmap = plt.get_cmap('tab20b')
+# cmap = plt.get_cmap('Vega20b')
 colors = [cmap(i) for i in np.linspace(0, 1, 20)]
 
 print ('\nSaving images:')
@@ -120,25 +121,31 @@ for img_i, (path, detections) in enumerate(zip(imgs, img_detections)):
         unique_labels = detections[:, -1].cpu().unique()
         n_cls_preds = len(unique_labels)
         bbox_colors = random.sample(colors, n_cls_preds)
-        for x1, y1, x2, y2, conf, cls_conf, cls_pred in detections:
+        with open('output/%d.csv' % (img_i), 'w', encoding='UTF8') as f:
+            writer = csv.writer(f)
+            writer.writerow(['object','x1', 'y1', 'box_w', 'box_h'])
+            for x1, y1, x2, y2, conf, cls_conf, cls_pred in detections:
 
-            print ('\t+ Label: %s, Conf: %.5f' % (classes[int(cls_pred)], cls_conf.item()))
-            # Rescale coordinates to original dimensions
-            box_h = int(((y2 - y1) / unpad_h) * (img.shape[0]))
-            box_w = int(((x2 - x1) / unpad_w) * (img.shape[1]) )
-            y1 = int(((y1 - pad_y // 2) / unpad_h) * (img.shape[0]))
-            x1 = int(((x1 - pad_x // 2) / unpad_w) * (img.shape[1]))
+                print ('\t+ Label: %s, Conf: %.5f' % (classes[int(cls_pred)], cls_conf.item()))
+                # Rescale coordinates to original dimensions
+                box_h = int(((y2 - y1) / unpad_h) * (img.shape[0]))
+                box_w = int(((x2 - x1) / unpad_w) * (img.shape[1]) )
+                y1 = int(((y1 - pad_y // 2) / unpad_h) * (img.shape[0]))
+                x1 = int(((x1 - pad_x // 2) / unpad_w) * (img.shape[1]))
+                
+                
 
-            color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
-            # Create a Rectangle patch
-            bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=2,
-                                    edgecolor=color,
-                                    facecolor='none')
-            # Add the bbox to the plot
-            ax.add_patch(bbox)
-            # Add label
-            plt.text(x1, y1-30, s=classes[int(cls_pred)]+' '+ str('%.4f'%cls_conf.item()), color='white', verticalalignment='top',
-                    bbox={'color': color, 'pad': 0})
+                writer.writerow([classes[int(cls_pred)],x1, y1, box_w, box_h])
+                color = bbox_colors[int(np.where(unique_labels == int(cls_pred))[0])]
+                # Create a Rectangle patch
+                bbox = patches.Rectangle((x1, y1), box_w, box_h, linewidth=2,
+                                        edgecolor=color,
+                                        facecolor='none')
+                # Add the bbox to the plot
+                ax.add_patch(bbox)
+                # Add label
+                plt.text(x1, y1-30, s=classes[int(cls_pred)]+' '+ str('%.4f'%cls_conf.item()), color='white', verticalalignment='top',
+                        bbox={'color': color, 'pad': 0})
 
     # Save generated image with detections
     plt.axis('off')
