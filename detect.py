@@ -122,7 +122,7 @@ for img_i, (path, detections) in enumerate(zip(imgs, img_detections)):
         unique_labels = detections[:, -1].cpu().unique()
         n_cls_preds = len(unique_labels)
         bbox_colors = random.sample(colors, n_cls_preds)
-        with open('output/%d.csv' % (img_i), 'w', encoding='UTF8') as f:
+        with open('%s/%d.csv' % (opt.output_path, img_i), 'w', encoding='UTF8') as f:
             writer = csv.writer(f)
             writer.writerow(['object','x1', 'y1', 'box_w', 'box_h'])
             for x1, y1, x2, y2, conf, cls_conf, cls_pred in detections:
